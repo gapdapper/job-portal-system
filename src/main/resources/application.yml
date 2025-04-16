@@ -1,0 +1,27 @@
+#spring.application.name=Job Portal System
+
+spring:
+  application:
+    name: job-portal-system
+  profiles:
+    active:
+      - db
+  datasource:
+    url: jdbc:mysql://localhost:3306/jobportal?createDatabaseIfNotExist=true&autoReconnect=true&characterEncoding=UTF-8&allowMultiQueries=true&allowPublicKeyRetrieval=true&useSSL=false
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: password
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+    hibernate:
+      ddl-auto: create
+
+application:
+  security:
+    jwt:
+      secret-key: 4efb68814446609cbb3cfca074c9d19261609c498835663652fc0a53b909d64d780dbe561da5c6da5aeafc73c6bebe1de39b23973a1e76704653b3b7ea98e2b441e1effd8b1dd1ccc026aefc535619ff9b24f902094fd48ae840d8e89644d398760b8860e6a3b8b863e2e12ff36e3bbc21c8a25ed95b2f033fddf3236d2c752005618719d286ffeb4e9af5a50052f9c42d0cec72248703e52343f7588dca981699af751b02715b7ebd8b0e44795d82b99e967d70b874e1537a044881b4ec438bcf05bd810cefb15b65e85575a6af28ebd54e6d428afc76b6fe5f33c6c080081aee0c3dcbc5ac53f6c0d735a6465a010aa88c0d30d2704d08586c2165fb130efa9ed42eed85434e6dc02de9f9adbebb873b94aef60dfad147c5487fe7c957c83fca762d9bce9ce83e779a71dd6d72299af56bd0097f85a3d64ce94109816ca9d136795397a68941b27d33ebbfb22b40057eb87843494b146e093acab619cb058375722e807661134e148e6bc6fef82fdf7d44a4835d1dcd357bca42c4feaf3e59a7b0862d1ec5dcf481a3a6fd8577cc40b6bc252e40c4e817b8f6f12e4a0cef57af04254c9b5eca923b88a5273db6e5b82d8e0f722bcdef7d6e7f23fb5f6575e59635c6a6148fad3feb6c95ee05393e64b059efd4ba0d28a133296c1bc9693970c5b10e4ee53bf2ef7a35e3cc45ab9bd4b6c1195f50938848bc67f42b3acca8ad
+      expiration: 86400000 # 86400000 # a day
+      refresh-token:
+        expiration: 604800000 # 7 days
