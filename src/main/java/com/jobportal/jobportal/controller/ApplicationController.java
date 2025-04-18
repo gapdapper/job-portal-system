@@ -2,7 +2,9 @@ package com.jobportal.jobportal.controller;
 
 
 import com.jobportal.jobportal.entitiy.Application;
+import com.jobportal.jobportal.entitiy.ApplicationDto;
 import com.jobportal.jobportal.service.ApplicationService;
+import com.jobportal.jobportal.util.JobsMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -17,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 import java.util.Date;
 
-@Controller
+@RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/")
 public class ApplicationController {
@@ -52,7 +54,8 @@ public class ApplicationController {
     ){
         application.setAppliedDate(new Date());
         Application output = applicationService.save(application);
+        ApplicationDto applicationDto = JobsMapper.INSTANCE.applicationToApplicationDto(output);
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body("Successfully summited application!");
+                .body(applicationDto);
     }
 }
