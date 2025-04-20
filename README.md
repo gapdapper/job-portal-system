@@ -1,68 +1,96 @@
 # Job Portal System
 
-A full-stack web application built with **Spring Boot** that enables job seekers and companies to connect efficiently. The system provides job postings, application submissions, role-based access control, and secure authentication using JWT.
+A backend RESTful API built with **Spring Boot** that enables job seekers and companies to connect efficiently. The system provides job postings, application submissions, role-based access control, and secure authentication using JWT.
 
 ## 🚀 Features
 
 - User authentication & registration with JWT
 - Role-based authorization (Admin, Applicant, Company)
-- Pagination, and sorting for job listings
+- Pagination and sorting for job listings
 - Applicants can apply for jobs
 - Admins can view all applications
-- Pagination and sorting for job listings
 - RESTful API design
 
 ## 🛠 Tech Stack
 
 - **Backend:** Spring Boot, Spring Security, JWT, Hibernate, JPA
-- **Database:** MySQL / PostgreSQL (your choice)
-- **Build Tool:** Maven / Gradle
-- **Other:** Lombok, MapStruct, Swagger (optional)
+- **Database:** MySQL
+- **Build Tool:** Maven
+- **Other:** Lombok, MapStruct
 
 ## ⚙️ Configuration
 
-Configure your database in `application.properties` or `application.yml`:
+Update your `application.yml` or `application.properties` file as shown below:
 
-```properties
-spring.datasource.url=jdbc:mysql://localhost:3306/job_portal
-spring.datasource.username=your_db_user
-spring.datasource.password=your_db_password
+```yaml
+#spring.application.name=Job Portal System
+
+spring:
+  application:
+    name: job-portal-system
+  profiles:
+    active:
+      - db
+  datasource:
+    url: jdbc:mysql://localhost:3306/jobportal?createDatabaseIfNotExist=true&autoReconnect=true&characterEncoding=UTF-8&allowMultiQueries=true&allowPublicKeyRetrieval=true&useSSL=false
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: password
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+    hibernate:
+      ddl-auto: create
+
+application:
+  security:
+    jwt:
+      secret-key: <your-secure-jwt-secret>
+      expiration: 86400000 # 1 day
+      refresh-token:
+        expiration: 604800000 # 7 days
 ```
 
-Alternatively, use Docker Compose to set up the database:
+> 🔐 Replace `<your-secure-jwt-secret>` with your actual secure key.
 
-Create a `docker-compose.yml` file:
+## 🐳 Docker Integration
+
+This project includes automatic Docker support. When running the app using the Maven wrapper, the required services (like the database) will start automatically using `compose.yaml`.
+
+### Docker Requirements
+
+- Docker & Docker Compose installed and running
+- `compose.yaml` file present in the root directory
+
+### Compose File Example
 
 ```yaml
 version: '3.8'
 services:
-    db:
-        image: mysql:8.0
-        container_name: job_portal_db
-        restart: always
-        environment:
-            MYSQL_ROOT_PASSWORD: root_password
-            MYSQL_DATABASE: job_portal
-            MYSQL_USER: your_db_user
-            MYSQL_PASSWORD: your_db_password
-        ports:
-            - "3306:3306"
-        volumes:
-            - db_data:/var/lib/mysql
+  db:
+    image: mysql:8.0
+    container_name: job_portal_db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: job_portal
+      MYSQL_USER: your_db_user
+      MYSQL_PASSWORD: your_db_password
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
 
 volumes:
-    db_data:
+  db_data:
 ```
 
-Start the database:
-
-```bash
-docker-compose up -d
-```
+> ✅ **Note:** No need to manually run `docker compose up`. It's triggered automatically when you run the app via Maven.
 
 ## 🏗 Build and Run
 
-Build and run the application:
+To build and run the application with Docker support:
 
 ```bash
 ./mvnw spring-boot:run
