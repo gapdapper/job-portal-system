@@ -1,20 +1,18 @@
 package com.jobportal.jobportal.entitiy;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.Date;
 
-@Data
+@Setter
+@Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class ApplicationDto {
 
-    Long id;
-    String status;
-    Date appliedDate;
+    private Long id;
+    private String status;
+    private Date appliedDate;
 
 }
