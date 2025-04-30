@@ -20,7 +20,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
-import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
@@ -38,33 +37,24 @@ public class InitApp implements ApplicationListener<ApplicationReadyEvent> {
 
         addUser();
 
-        companyRepository.save(Company.builder()
+
+        Company company1 = companyRepository.save(Company.builder()
                 .companyName("Apex Innovations")
                 .industry("Technology")
                 .website("www.apexinnovations.com")
                 .build());
 
-        companyRepository.save(Company.builder()
-                .companyName("GreenFuture Energy")
-                .industry("Renewable Energy")
-                .website("www.greenfutureenergy.com")
-                .build());
+        company1.setUser(user3);
+        companyRepository.save(company1);
 
-        companyRepository.save(Company.builder()
-                .companyName("Swift Logistics")
-                .industry("Transportation & Logistics")
-                .website("www.swiftlogistics.com")
-                .build());
 
-        Optional<Company> company1 = companyRepository.findById(1L);
-
-        jobPostRepository.save(JobPost.builder()
+        JobPost jobPost1 = jobPostRepository.save(JobPost.builder()
                 .title("Software Engineer")
                 .description("Work on scalable backend systems.")
                 .location("New York, NY")
                 .salaryRange("$80,000 - $120,000")
                 .postedDate(new Date())
-                .company(company1.get())
+                .company(company1)
                 .build());
 
         jobPostRepository.save(JobPost.builder()
@@ -73,7 +63,7 @@ public class InitApp implements ApplicationListener<ApplicationReadyEvent> {
                 .location("San Francisco, CA")
                 .salaryRange("$90,000 - $130,000")
                 .postedDate(new Date())
-                .company(company1.get())
+                .company(company1)
                 .build());
 
         jobPostRepository.save(JobPost.builder()
@@ -82,7 +72,7 @@ public class InitApp implements ApplicationListener<ApplicationReadyEvent> {
                 .location("Remote")
                 .salaryRange("$100,000 - $140,000")
                 .postedDate(new Date())
-                .company(company1.get())
+                .company(company1)
                 .build());
 
         jobPostRepository.save(JobPost.builder()
@@ -91,7 +81,7 @@ public class InitApp implements ApplicationListener<ApplicationReadyEvent> {
                 .location("Chicago, IL")
                 .salaryRange("$95,000 - $135,000")
                 .postedDate(new Date())
-                .company(company1.get())
+                .company(company1)
                 .build());
 
         jobPostRepository.save(JobPost.builder()
@@ -100,7 +90,7 @@ public class InitApp implements ApplicationListener<ApplicationReadyEvent> {
                 .location("Austin, TX")
                 .salaryRange("$85,000 - $125,000")
                 .postedDate(new Date())
-                .company(company1.get())
+                .company(company1)
                 .build());
 
         jobPostRepository.save(JobPost.builder()
@@ -109,24 +99,23 @@ public class InitApp implements ApplicationListener<ApplicationReadyEvent> {
                 .location("Seattle, WA")
                 .salaryRange("$75,000 - $110,000")
                 .postedDate(new Date())
-                .company(company1.get())
+                .company(company1)
                 .build());
 
-        Optional<User> user = userRepository.findById(1);
 
-        applicantRepository.save(Applicant.builder()
-                        .user(user.get())
+        Applicant applicant1 = applicantRepository.save(Applicant.builder()
                 .name("Michael Mann")
                 .skills("Backend Developer")
                 .experienceYears("2 Years")
                 .build());
 
-        Optional<JobPost> jobPost = jobPostRepository.findById(1L);
-        Optional<Applicant> applicant = applicantRepository.findById(1L);
+        applicant1.setUser(user2);
+        applicantRepository.save(applicant1);
+
 
         applicationRepository.save(Application.builder()
-                .jobPost(jobPost.get())
-                .applicant(applicant.get())
+                .jobPost(jobPost1)
+                .applicant(applicant1)
                 .appliedDate(new Date())
                 .status("APPLIED")
                 .build());
