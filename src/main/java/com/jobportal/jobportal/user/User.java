@@ -1,5 +1,7 @@
 package com.jobportal.jobportal.user;
 
+import com.jobportal.jobportal.entitiy.Applicant;
+import com.jobportal.jobportal.entitiy.Company;
 import com.jobportal.jobportal.token.Token;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -36,6 +38,12 @@ public class User implements UserDetails {
   private String email;
   private String password;
   private Boolean enabled;
+
+  @OneToOne(mappedBy = "user")
+  private Applicant applicant;
+
+  @OneToOne(mappedBy = "user")
+  private Company company;
 
   @Enumerated(EnumType.STRING)
   @ElementCollection

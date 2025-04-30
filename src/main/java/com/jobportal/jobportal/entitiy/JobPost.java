@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.Date;
+import java.util.List;
 
 @Setter
 @Getter
@@ -21,9 +22,13 @@ public class JobPost {
     private String description;
     private String location;
     private String salaryRange;
+    private Date postedDate;
+
+
     @ManyToOne
     @JoinColumn(name = "company_id")
-    @JsonBackReference("company-jobpost")
     private Company company;
-    private Date postedDate;
+
+    @OneToMany(mappedBy = "jobPost")
+    private List<Application> application;
 }
