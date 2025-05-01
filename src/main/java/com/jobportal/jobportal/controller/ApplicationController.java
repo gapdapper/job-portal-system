@@ -2,11 +2,11 @@ package com.jobportal.jobportal.controller;
 
 
 import com.jobportal.jobportal.dao.ApplicantDao;
-import com.jobportal.jobportal.entitiy.Applicant;
-import com.jobportal.jobportal.entitiy.Application;
-import com.jobportal.jobportal.entitiy.ApplicationDto;
+import com.jobportal.jobportal.entitiy.*;
 import com.jobportal.jobportal.service.ApplicantService;
 import com.jobportal.jobportal.service.ApplicationService;
+import com.jobportal.jobportal.service.CompanyService;
+import com.jobportal.jobportal.service.JobPostService;
 import com.jobportal.jobportal.user.User;
 import com.jobportal.jobportal.user.UserService;
 import com.jobportal.jobportal.util.JobsMapper;
@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -33,6 +34,8 @@ public class ApplicationController {
     final ApplicationService applicationService;
     final ApplicantService applicantService;
     final UserService userService;
+    final CompanyService companyService;
+    final JobPostService jobPostService;
 
 
     @PreAuthorize("hasRole('ROLE_COMPANY')")
@@ -53,6 +56,33 @@ public class ApplicationController {
 
     }
 
+    @PreAuthorize("hasRole('ROLE_COMPANY')")
+    @PutMapping("jobs/{job-id}/applications/{app-id}/shortlisted")
+    public ResponseEntity<?> shortlistApplication(
+            @PathVariable("job-id")Long jobId,
+            @PathVariable("app-id")Long appId,
+            Principal principal
+    ){
+
+        User currentUser = userService.findByUsername(principal.getName());
+        Company company = companyService.findCompanyByUserId(currentUser.getId());
+        JobPost jobPost = jobPostService.findById(jobId);
+
+
+        if(company.getId().equals(jobPost.getCompany().getId())){
+        Application shortlistedApplication = applicationService.shortlistApplication(appId);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(shortlistedApplication);
+        }
+
+        else {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body("You are not authorized to shortlist this application.");
+        }
+
+
+    }
+
 
     @PreAuthorize("hasRole('ROLE_APPLICANT')")
     @PostMapping("jobs/{id}/submit")
@@ -68,7 +98,9 @@ public class ApplicationController {
                 .body(applicationDto);
     }
 
-    @GetMapping("jobs/applicant")
+
+    @PreAuthorize("hasRole('ROLE_APPLICANT')")
+    @GetMapping("jobs/applications/me")
     public ResponseEntity<?> getApplicationByApplicant(
             Principal principal
     ){
@@ -79,7 +111,7 @@ public class ApplicationController {
 
 
         if (output.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.OK)
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body("No application found with Applicant Id: " + applicant.getId());
         }
 

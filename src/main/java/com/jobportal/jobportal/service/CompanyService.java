@@ -1,8 +1,8 @@
-package com.jobportal.jobportal.dao;
+package com.jobportal.jobportal.service;
 
 import com.jobportal.jobportal.entitiy.Company;
 
-public interface CompanyDao {
+public interface CompanyService {
     Company getCompany(Long id);
     Company findCompanyByUserId(Integer id);
 }

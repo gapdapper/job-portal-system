@@ -43,4 +43,18 @@ public class ApplicationServiceImpl implements ApplicationService{
     public List<Application> findByApplicantId(Long id) {
         return applicationDao.findByApplicantId(id);
     }
+
+    @Override
+    public Optional<Application> findById(Long id) {
+        return applicationDao.findById(id);
+    }
+
+    @Override
+    public Application shortlistApplication(Long appId) {
+        Optional<Application> applicationOptional = applicationDao.findById(appId);
+        Application application = applicationOptional.get();
+
+        application.setStatus("SHORTLISTED");
+        return applicationDao.save(application);
+    }
 }

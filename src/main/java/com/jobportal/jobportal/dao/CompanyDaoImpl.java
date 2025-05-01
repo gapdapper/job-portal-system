@@ -16,4 +16,9 @@ public class CompanyDaoImpl implements CompanyDao{
     public Company getCompany(Long id) {
         return companyRepository.findById(id).orElse(null);
     }
+
+    @Override
+    public Company findCompanyByUserId(Integer id) {
+        return companyRepository.findByUserId(id);
+    }
 }
