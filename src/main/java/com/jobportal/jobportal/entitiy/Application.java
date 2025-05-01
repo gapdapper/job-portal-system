@@ -1,6 +1,7 @@
 package com.jobportal.jobportal.entitiy;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -24,6 +25,7 @@ public class Application {
     @JoinColumn(name = "job_post_id")
     private JobPost jobPost;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "applicant_id", referencedColumnName = "id")
     private Applicant applicant;

@@ -1,5 +1,6 @@
 package com.jobportal.jobportal.entitiy;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.jobportal.jobportal.user.User;
 import jakarta.persistence.*;
 import lombok.*;
@@ -19,9 +20,11 @@ public class Applicant {
     private String skills;
     private String experienceYears;
 
+    @JsonIgnore
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
+
 
     @OneToOne(mappedBy = "applicant")
     Application application;
