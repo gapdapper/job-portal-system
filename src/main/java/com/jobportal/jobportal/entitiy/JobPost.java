@@ -2,6 +2,7 @@ package com.jobportal.jobportal.entitiy;
 
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -29,6 +30,7 @@ public class JobPost {
     @JoinColumn(name = "company_id")
     private Company company;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "jobPost")
     private List<Application> application;
 }

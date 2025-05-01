@@ -1,5 +1,6 @@
 package com.jobportal.jobportal.user;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.jobportal.jobportal.entitiy.Applicant;
 import com.jobportal.jobportal.entitiy.Company;
 import com.jobportal.jobportal.token.Token;
@@ -41,6 +42,7 @@ public class User implements UserDetails {
 
   @OneToOne(mappedBy = "user")
   private Applicant applicant;
+
 
   @OneToOne(mappedBy = "user")
   private Company company;
