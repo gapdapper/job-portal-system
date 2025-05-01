@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 
@@ -36,5 +37,10 @@ public class ApplicationServiceImpl implements ApplicationService{
     @Override
     public Page<Application> findByJobPostId(Long id, Pageable pageable) {
         return applicationDao.findByJobPostId(id, pageable);
+    }
+
+    @Override
+    public List<Application> findByApplicantId(Long id) {
+        return applicationDao.findByApplicantId(id);
     }
 }

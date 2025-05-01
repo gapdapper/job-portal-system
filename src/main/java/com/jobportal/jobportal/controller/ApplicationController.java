@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.Date;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -58,4 +59,26 @@ public class ApplicationController {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(applicationDto);
     }
+
+    @GetMapping("jobs/applicant/{id}")
+    public ResponseEntity<?> getApplicationByApplicant(
+            @PathVariable("id")Long id
+    ){
+        List<Application> output = applicationService.findByApplicantId(id);
+
+
+        if (output.isEmpty()) {
+            System.out.println("This");
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body("No application found with JobPost Id: " + id);
+        }
+
+        // possible DTO
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(output);
+
+    }
+
+
 }

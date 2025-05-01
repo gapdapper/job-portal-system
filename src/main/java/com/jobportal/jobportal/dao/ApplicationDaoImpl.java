@@ -7,6 +7,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 
 @Repository
 @RequiredArgsConstructor
@@ -22,5 +24,10 @@ public class ApplicationDaoImpl implements ApplicationDao{
     @Override
     public Page<Application> findByJobPostId(Long id, Pageable pageable) {
         return applicationRepository.findByJobPostId(id, pageable);
+    }
+
+    @Override
+    public List<Application> findByApplicantId(Long id) {
+        return applicationRepository.findByApplicantId(id);
     }
 }
