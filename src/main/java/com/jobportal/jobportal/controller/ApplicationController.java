@@ -1,9 +1,14 @@
 package com.jobportal.jobportal.controller;
 
 
+import com.jobportal.jobportal.dao.ApplicantDao;
+import com.jobportal.jobportal.entitiy.Applicant;
 import com.jobportal.jobportal.entitiy.Application;
 import com.jobportal.jobportal.entitiy.ApplicationDto;
+import com.jobportal.jobportal.service.ApplicantService;
 import com.jobportal.jobportal.service.ApplicationService;
+import com.jobportal.jobportal.user.User;
+import com.jobportal.jobportal.user.UserService;
 import com.jobportal.jobportal.util.JobsMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -26,6 +31,9 @@ import java.util.List;
 public class ApplicationController {
 
     final ApplicationService applicationService;
+    final ApplicantService applicantService;
+    final UserService userService;
+
 
     @PreAuthorize("hasRole('ROLE_COMPANY')")
     @GetMapping("jobs/{id}/applications")
@@ -60,20 +68,21 @@ public class ApplicationController {
                 .body(applicationDto);
     }
 
-    @GetMapping("jobs/applicant/{id}")
+    @GetMapping("jobs/applicant")
     public ResponseEntity<?> getApplicationByApplicant(
-            @PathVariable("id")Long id
+            Principal principal
     ){
-        List<Application> output = applicationService.findByApplicantId(id);
+
+        User currentUser = userService.findByUsername(principal.getName());
+        Applicant applicant = applicantService.findByUserId(currentUser.getId());
+        List<Application> output = applicationService.findByApplicantId(applicant.getId());
 
 
         if (output.isEmpty()) {
-            System.out.println("This");
             return ResponseEntity.status(HttpStatus.OK)
-                    .body("No application found with JobPost Id: " + id);
+                    .body("No application found with Applicant Id: " + applicant.getId());
         }
 
-        // possible DTO
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(output);

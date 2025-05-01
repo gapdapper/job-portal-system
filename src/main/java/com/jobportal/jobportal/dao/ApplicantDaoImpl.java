@@ -16,4 +16,9 @@ public class ApplicantDaoImpl implements ApplicantDao{
     public Optional<Applicant> findById(Long id) {
         return applicantRepository.findById(id);
     }
+
+    @Override
+    public Applicant findByUserId(Integer id) {
+        return applicantRepository.findByUserId(id);
+    }
 }

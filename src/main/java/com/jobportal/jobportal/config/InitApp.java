@@ -44,7 +44,7 @@ public class InitApp implements ApplicationListener<ApplicationReadyEvent> {
                 .website("www.apexinnovations.com")
                 .build());
 
-        company1.setUser(user3);
+        company1.setUser(user4);
         companyRepository.save(company1);
 
 
@@ -112,6 +112,15 @@ public class InitApp implements ApplicationListener<ApplicationReadyEvent> {
         applicant1.setUser(user2);
         applicantRepository.save(applicant1);
 
+        Applicant applicant2 = applicantRepository.save(Applicant.builder()
+                .name("Paul Durant")
+                .skills("System Engineer")
+                .experienceYears("6 Years")
+                .build());
+
+        applicant2.setUser(user3);
+        applicantRepository.save(applicant2);
+
 
         applicationRepository.save(Application.builder()
                 .jobPost(jobPost1)
@@ -121,7 +130,7 @@ public class InitApp implements ApplicationListener<ApplicationReadyEvent> {
                 .build());
     }
 
-    User user1, user2, user3;
+    User user1, user2, user3, user4;
     private void addUser() {
         PasswordEncoder encoder = new BCryptPasswordEncoder();
         user1 = User.builder()
@@ -134,15 +143,24 @@ public class InitApp implements ApplicationListener<ApplicationReadyEvent> {
                 .build();
 
         user2 = User.builder()
-                .username("user")
-                .password(encoder.encode("user"))
-                .firstname("user")
-                .lastname("user")
-                .email("user@user.com")
+                .username("applicant01")
+                .password(encoder.encode("applicant01"))
+                .firstname("applicant01")
+                .lastname("applicant01")
+                .email("applicant01@user.com")
                 .enabled(true)
                 .build();
 
         user3 = User.builder()
+                .username("applicant02")
+                .password(encoder.encode("applicant02"))
+                .firstname("applicant02")
+                .lastname("applicant02")
+                .email("applicant02@user.com")
+                .enabled(true)
+                .build();
+
+        user4 = User.builder()
                 .username("company")
                 .password(encoder.encode("company"))
                 .firstname("company")
