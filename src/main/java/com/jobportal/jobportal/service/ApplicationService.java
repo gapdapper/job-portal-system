@@ -14,4 +14,5 @@ public interface ApplicationService {
     Optional<Application> findById(Long id);
 
     Application shortlistApplication(Long appId);
+    Application rejectApplication(Long appId);
 }

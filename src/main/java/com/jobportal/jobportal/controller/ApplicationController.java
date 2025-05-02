@@ -57,7 +57,7 @@ public class ApplicationController {
     }
 
     @PreAuthorize("hasRole('ROLE_COMPANY')")
-    @PutMapping("jobs/{job-id}/applications/{app-id}/shortlisted")
+    @PutMapping("jobs/{job-id}/applications/{app-id}/shortlist")
     public ResponseEntity<?> shortlistApplication(
             @PathVariable("job-id")Long jobId,
             @PathVariable("app-id")Long appId,
@@ -67,17 +67,58 @@ public class ApplicationController {
         User currentUser = userService.findByUsername(principal.getName());
         Company company = companyService.findCompanyByUserId(currentUser.getId());
         JobPost jobPost = jobPostService.findById(jobId);
+        Optional<Application> applicationOptional = applicationService.findById(appId);
+        Application application = applicationOptional.get();
 
 
-        if(company.getId().equals(jobPost.getCompany().getId())){
+        if(company.getId().equals(jobPost.getCompany().getId()) && jobPost.getId().equals(application.getJobPost().getId())){
         Application shortlistedApplication = applicationService.shortlistApplication(appId);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(shortlistedApplication);
         }
 
+        else if (jobPost.getId().equals(application.getJobPost().getId())){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("No application found");
+        }
+
         else {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
                     .body("You are not authorized to shortlist this application.");
+        }
+
+
+    }
+
+    @PreAuthorize("hasRole('ROLE_COMPANY')")
+    @PutMapping("jobs/{job-id}/applications/{app-id}/reject")
+    public ResponseEntity<?> rejectApplication(
+            @PathVariable("job-id")Long jobId,
+            @PathVariable("app-id")Long appId,
+            Principal principal
+    ){
+
+        User currentUser = userService.findByUsername(principal.getName());
+        Company company = companyService.findCompanyByUserId(currentUser.getId());
+        JobPost jobPost = jobPostService.findById(jobId);
+        Optional<Application> applicationOptional = applicationService.findById(appId);
+        Application application = applicationOptional.get();
+
+
+        if(company.getId().equals(jobPost.getCompany().getId()) && jobPost.getId().equals(application.getJobPost().getId())){
+            Application shortlistedApplication = applicationService.rejectApplication(appId);
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(shortlistedApplication);
+        }
+
+        else if (jobPost.getId().equals(application.getJobPost().getId())){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("No application found");
+        }
+
+        else {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body("You are not authorized to reject this application.");
         }
 
 

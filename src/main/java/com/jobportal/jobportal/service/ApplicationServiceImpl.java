@@ -57,4 +57,14 @@ public class ApplicationServiceImpl implements ApplicationService{
         application.setStatus("SHORTLISTED");
         return applicationDao.save(application);
     }
+
+
+    @Override
+    public Application rejectApplication(Long appId) {
+        Optional<Application> applicationOptional = applicationDao.findById(appId);
+        Application application = applicationOptional.get();
+
+        application.setStatus("REJECTED");
+        return applicationDao.save(application);
+    }
 }
