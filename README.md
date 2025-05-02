@@ -101,11 +101,34 @@ Access the API at:
 
 ## 📖 API Endpoints
 
-| Method | Endpoint                  | Description                          |
-|--------|---------------------------|--------------------------------------|
-| POST   | `/auth/register`          | Register a new user                 |
-| POST   | `/auth/login`             | Login and receive JWT               |
-| GET    | `/jobs`                   | List all job posts                  |
-| POST   | `/jobs`                   | (Company only) Create a job post    |
-| POST   | `/jobs/{id}/submit`       | (Applicant only) Apply for a job    |
-| GET    | `/jobs/{id}/applications` | (Admin only) View applications      |
+### 🔐 Authentication
+
+| Method | Endpoint         | Description              |
+|--------|------------------|--------------------------|
+| POST   | `/auth/register` | Register a new user      |
+| POST   | `/auth/login`    | Login and receive a JWT  |
+
+---
+
+### 💼 Job Posts
+
+| Method | Endpoint                           | Description                                                        |
+|--------|------------------------------------|--------------------------------------------------------------------|
+| GET    | `/api/v1/jobs`                     | Get all job posts with optional pagination, sorting, and filtering |
+| GET    | `/api/v1/jobs/{id}`                | Get a specific job post by ID                                      |
+| GET    | `/api/v1/jobs/industry/{industry}` | Get job posts filtered by industry                                 |
+| POST   | `/api/v1/jobs`                     | (Company only) Create a new job post                               |
+| PUT    | `/api/v1/jobs/{id}`                | (Company only) Update a job post by ID                             |
+| DELETE | `/api/v1/jobs/{id}`                | (Company only) Delete a job post by ID                             |
+
+---
+
+### 📝 Job Applications
+
+| Method | Endpoint                                                 | Description                                                       |
+|--------|----------------------------------------------------------|-------------------------------------------------------------------|
+| POST   | `/api/v1/jobs/{id}/submit`                               | (Applicant only) Submit a job application                         |
+| GET    | `/api/v1/jobs/applications/me`                           | (Applicant only) View applications submitted by current applicant |
+| GET    | `/api/v1/jobs/{id}/applications`                         | (Company only) View applications for a specific job post          |
+| PUT    | `/api/v1/jobs/{job-id}/applications/{app-id}/shortlist` | (Company only) Shortlist an application                           |
+| PUT    | `/api/v1/jobs/{job-id}/applications/{app-id}/reject`    | (Company only) Reject an application                              |
