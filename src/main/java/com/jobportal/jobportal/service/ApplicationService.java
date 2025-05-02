@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ApplicationService {
-    Application save(Application application);
+    Application submitApplication(Long jobId, String applicantUsername);
     Page<Application> findByJobPostId(Long id, Pageable pageable);
     List<Application> findByApplicantId(Long id);
     Optional<Application> findById(Long id);

@@ -129,14 +129,12 @@ public class ApplicationController {
     @PostMapping("jobs/{id}/submit")
     public ResponseEntity<?> submitApplication(
             @PathVariable("id")Long id,
-            @RequestBody Application application,
             Principal principal
     ){
-        application.setAppliedDate(new Date());
-        Application output = applicationService.save(application);
-        ApplicationDto applicationDto = JobsMapper.INSTANCE.applicationToApplicationDto(output);
+
+        Application persistedApplication = applicationService.submitApplication(id, principal.getName());
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(applicationDto);
+                .body(persistedApplication);
     }
 
 

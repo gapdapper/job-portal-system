@@ -6,11 +6,16 @@ import com.jobportal.jobportal.dao.JobPostDao;
 import com.jobportal.jobportal.entitiy.Applicant;
 import com.jobportal.jobportal.entitiy.Application;
 import com.jobportal.jobportal.entitiy.JobPost;
+import com.jobportal.jobportal.repository.ApplicationRepository;
+import com.jobportal.jobportal.user.User;
+import com.jobportal.jobportal.user.UserDao;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,16 +27,30 @@ public class ApplicationServiceImpl implements ApplicationService{
     final ApplicationDao applicationDao;
     final JobPostDao jobPostDao;
     final ApplicantDao applicantDao;
+    final UserDao userDao;
+    private final ApplicationRepository applicationRepository;
+
 
     @Override
-    public Application save(Application application) {
-        Optional<Applicant> applicant = applicantDao.findById(application.getApplicant().getId());
-        JobPost jobPost = jobPostDao.findById(application.getJobPost().getId());
+    public Application submitApplication(Long jobId, String applicantUsername) {
 
-        application.setApplicant(applicant.get());
+        User user = userDao.findByUsername(applicantUsername);
+        Applicant applicant = applicantDao.findByUserId(user.getId());
+        JobPost jobPost = jobPostDao.findById(jobId);
+
+        if (jobPost == null){
+            throw new EntityNotFoundException("Job post not found: ID " + jobId);
+        }
+
+
+        Application application = new Application();
+
+        application.setApplicant(applicant);
+        application.setAppliedDate(new Date());
         application.setJobPost(jobPost);
+        application.setStatus("APPLIED");
 
-        return applicationDao.save(application);
+        return applicationRepository.save(application);
     }
 
     @Override
