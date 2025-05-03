@@ -10,6 +10,7 @@ import com.jobportal.jobportal.service.JobPostService;
 import com.jobportal.jobportal.user.User;
 import com.jobportal.jobportal.user.UserService;
 import com.jobportal.jobportal.util.JobsMapper;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -17,6 +18,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -56,6 +58,7 @@ public class ApplicationController {
 
     }
 
+
     @PreAuthorize("hasRole('ROLE_COMPANY')")
     @PutMapping("jobs/{job-id}/applications/{app-id}/shortlist")
     public ResponseEntity<?> shortlistApplication(
@@ -64,30 +67,20 @@ public class ApplicationController {
             Principal principal
     ){
 
-        User currentUser = userService.findByUsername(principal.getName());
-        Company company = companyService.findCompanyByUserId(currentUser.getId());
-        JobPost jobPost = jobPostService.findById(jobId);
-        Optional<Application> applicationOptional = applicationService.findById(appId);
-        Application application = applicationOptional.get();
-
-
-        if(company.getId().equals(jobPost.getCompany().getId()) && jobPost.getId().equals(application.getJobPost().getId())){
-        Application shortlistedApplication = applicationService.shortlistApplication(appId);
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(shortlistedApplication);
-        }
-
-        else if (jobPost.getId().equals(application.getJobPost().getId())){
+        try {
+            Application shortlistedApplication = applicationService.shortlistApplication(jobId, appId, principal.getName());
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(shortlistedApplication);
+        } catch (EntityNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("No application found");
-        }
-
-        else {
+                    .body(e.getMessage());
+        } catch (AccessDeniedException e) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                    .body("You are not authorized to shortlist this application.");
+                    .body(e.getMessage());
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(e.getMessage());
         }
-
-
     }
 
     @PreAuthorize("hasRole('ROLE_COMPANY')")
@@ -98,30 +91,20 @@ public class ApplicationController {
             Principal principal
     ){
 
-        User currentUser = userService.findByUsername(principal.getName());
-        Company company = companyService.findCompanyByUserId(currentUser.getId());
-        JobPost jobPost = jobPostService.findById(jobId);
-        Optional<Application> applicationOptional = applicationService.findById(appId);
-        Application application = applicationOptional.get();
-
-
-        if(company.getId().equals(jobPost.getCompany().getId()) && jobPost.getId().equals(application.getJobPost().getId())){
-            Application shortlistedApplication = applicationService.rejectApplication(appId);
+        try {
+            Application rejectedApplication = applicationService.rejectApplication(jobId, appId, principal.getName());
             return ResponseEntity.status(HttpStatus.OK)
-                    .body(shortlistedApplication);
-        }
-
-        else if (jobPost.getId().equals(application.getJobPost().getId())){
+                    .body(rejectedApplication);
+        } catch (EntityNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("No application found");
-        }
-
-        else {
+                    .body(e.getMessage());
+        } catch (AccessDeniedException e) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                    .body("You are not authorized to reject this application.");
+                    .body(e.getMessage());
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(e.getMessage());
         }
-
-
     }
 
 
@@ -148,17 +131,12 @@ public class ApplicationController {
         Applicant applicant = applicantService.findByUserId(currentUser.getId());
         List<Application> output = applicationService.findByApplicantId(applicant.getId());
 
-
         if (output.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body("No application found with Applicant Id: " + applicant.getId());
         }
 
-
         return ResponseEntity.status(HttpStatus.OK)
                 .body(output);
-
     }
-
-
 }

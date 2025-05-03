@@ -13,6 +13,6 @@ public interface ApplicationService {
     List<Application> findByApplicantId(Long id);
     Optional<Application> findById(Long id);
 
-    Application shortlistApplication(Long appId);
-    Application rejectApplication(Long appId);
+    Application shortlistApplication(Long jobId, Long appId, String username);
+    Application rejectApplication(Long jobId, Long appId, String username);
 }
